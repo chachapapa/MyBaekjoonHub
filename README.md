@@ -12,6 +12,7 @@
 |1271. 엄청난 부자2|[링크](./%EB%B0%B1%EC%A4%80/Bronze/1271.%E2%80%85%EC%97%84%EC%B2%AD%EB%82%9C%E2%80%85%EB%B6%80%EC%9E%902/README.md)|
 |1809. Moo|[링크](./%EB%B0%B1%EC%A4%80/Bronze/1809.%E2%80%85Moo/README.md)|
 |2338. 긴자리 계산|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2338.%E2%80%85%EA%B8%B4%EC%9E%90%EB%A6%AC%E2%80%85%EA%B3%84%EC%82%B0/%EA%B8%B4%EC%9E%90%EB%A6%AC%E2%80%85%EA%B3%84%EC%82%B0.java)|
+|2372. Livestock Count|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2372.%E2%80%85Livestock%E2%80%85Count/README.md)|
 |2558. A＋B － 2|[링크](./%EB%B0%B1%EC%A4%80/Bronze/2558.%E2%80%85A%EF%BC%8BB%E2%80%85%EF%BC%8D%E2%80%852/A%EF%BC%8BB%E2%80%85%EF%BC%8D%E2%80%852.java)|
 ### 🚀 Gold
 | 문제번호 | 링크 |
