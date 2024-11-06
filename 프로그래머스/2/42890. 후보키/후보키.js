@@ -1,66 +1,128 @@
 function solution(relation) {
-    let answer = 0;
-    // relation[0]의 길이만큼 인덱스번호를 원소로 가지는 초기배열을 만든다.
-    let idxArr = Array.from(Array(relation[0].length), (v, i) => i);
+    var answer = 0;
     
-  	let combinations=[]; //가능한 후보키들의 모든 조합을 우선 넣기
-  
-    for(let i=0;i<idxArr.length;i++){
-        combinations.push(...getCombination(idxArr,i+1))
-    }
+    //학번 이름 전공 학년
+    // 유일성 : 데이터가 유일해 식별가능함
+    // 최소성 : 키를 구성하는 속성중 하나를 제외하면 유일성이 파괴됨
+    // 기능한 후보키의 갯수를 구하라.
     
-    combinations = checkUniqueness(relation, combinations);  //유일성 체크해서 갱신
-    combinations = checkMinimality(combinations); // 최소성 체크해서 갱신
-  
-    return combinations.length
-
-}
-
-
-function checkUniqueness(relation,combinations){
-    let results = []; 
-  
-    combinations.forEach((combination) => { 
-        let set = new Set(); 
-        relation.forEach((rel) => {  
-            set.add(combination.map(combi => rel[combi]).join(','));
-        });
-        if(set.size == relation.length){
-            results.push(combination); 
+    
+    //가능한 모든 후보키의 나열
+    let keyCombinations = new Map()
+    getCombination(keyCombinations, relation[0].length, 0, [])
+    // console.log(keyCombinations)
+    //유일성을 확보하지 못한 키 제거
+    let keyToDelete = []
+    for(let keyCombi of keyCombinations){
+        
+        for(let key of keyCombi[1]){
+             if(!checkOnly(relation, key)){
+                keyToDelete.push(key)
+            }
         }
-    }); 
-    return results;
+       
+        
+    }
+    
+    for(let key of keyToDelete){
+        let tmpKeys = keyCombinations.get(key.length)
+        
+        tmpKeys = tmpKeys.filter(arr => arr != key)
+        keyCombinations.set(key.length, tmpKeys)
+    }
+    
+    // console.log(keyCombinations)
+    
+    
+    //최소성을 확보하지 못한 키 제거
+    //어떻게?
+    //일단 길이 제일 작은 데이터부터 올라가면서
+    //해당 데이터를 포함하는 키는
+    //제거하는 방향으로?
+    checkMinimum(keyCombinations, relation[0].length)
+    
+    for(let key of keyCombinations){
+        answer += key[1].length
+    }
+    return answer;
 }
 
-
-function checkMinimality(combinations){
-    let results=[]; 
-  
-    while(combinations.length){
-        results.push(combinations[0]);
-        combinations=combinations.reduce((acc,cur)=>{
-            let notMinimal=combinations[0].every(combination=>cur.includes(combination));
-            if(!notMinimal) acc.push(cur); 
-            return acc;
-        },[])
+const checkOnly = (relation, keyCombi) => {
+    
+    let map = new Map()
+    for(let data of relation){
+        let key = ""
+        for(let index of keyCombi){
+            key += data[index]
+        }
+        
+        if(!map.get(key)){
+            map.set(key, 1)
+        }else{
+            return false
+        }
     }
-  
-    return results;
+    
+    return true
     
 }
 
+const checkMinimum = (keyCombinations, length) => {
+    
+    // console.log(keyCombinations, length)
+    for(let i = 1 ; i<=length ; i++){
+        
+        let Keys = keyCombinations.get(i)
+        // console.log("Keys", Keys)
+        
+        //짧은 키부터 순회
+        for(let key of Keys){
+            
+            //자기보다 긴 애 순회
+            for(let j=i+1 ; j<=length ; j++){
+                
+                //삭제할 키 넣을 배열
+                let newKeys = []
+                let targetKeys = keyCombinations.get(j)
+                
+                targetCheck :
+                for(let targetKey of targetKeys){
+                    let isSubset = true
+                    
+                    for(let keyData of key){
+                        targetKey.includes(keyData)? null : isSubset = false; 
+                        
+                        if(!isSubset) {
+                            newKeys.push(targetKey)
+                            continue targetCheck
+                        }
+                        
+                    }
+                }
+                keyCombinations.set(j, newKeys)
+            }
+        
+        }
+        
 
-
-function getCombination(arr,selectNum){
-    let result=[];
-    if(selectNum===1){
-        return arr.map(a=>[a])
+        
     }
-    arr.forEach((fix,i,origin)=>{
-        const rest=origin.slice(i+1);
-        const combi=getCombination(rest,selectNum-1);
-        const attach=combi.map((c)=>[fix,...c]);
-        result.push(...attach)
-    })
-    return result;
 }
+
+//컬럼의 인덱스로 조합 구하기
+const getCombination = (arr, length, index, result) => {
+    
+    if(index == length){
+        if(arr.get(result.length)){
+            arr.set(result.length, [...arr.get(result.length),result] )
+        }else{
+            arr.set(result.length, [result])
+        }
+        return
+    }
+
+    getCombination(arr, length, index+1, [...result, index])
+    getCombination(arr, length, index+1, result)
+    
+}
+
